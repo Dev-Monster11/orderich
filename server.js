@@ -18,6 +18,9 @@ app.use(express.urlencoded({ extended: true }));
 let upload = multer({
     dest: 'uploads/'
 });
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, "build", "index.html"))
+})
 app.post('/upload', upload.single("file"), (req, res) => {
     fs.readFile(req.file.path, (err, data) => {
         fs.writeFile("temp.png", data, err => {

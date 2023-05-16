@@ -39,7 +39,7 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
     
-    axios.post('http://3.95.255.135:1234/upload', formData, {
+    axios.post('http://127.0.0.1:1234/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -57,7 +57,7 @@ function App() {
       //   config.timeout = 1000;
       //   return config;
       // });
-      axios.post('http://3.95.255.135:1234', payload)
+      axios.post('http://127.0.0.1:1234', payload)
       .then(res => {
         console.log(res);
         setZipURL('http://3.95.255.135:1234/' + res.data.code);

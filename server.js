@@ -14,7 +14,7 @@ const zipFile = archiver('zip', { zlib: { level: 9 }});
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(express.static(path.join(__dirname, "build")));
 let upload = multer({
     dest: 'uploads/'
 });

@@ -18,28 +18,12 @@ function App() {
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
   }
-  // const onFileUpload = () => {
-  //   const formData = new FormData();
-  //   formData.append('file', file);
-    
-  //   axios.post('http://localhost:1234/upload', formData, {
-  //     headers: {
-  //       'Content-Type': 'multipart/form-data'
-  //     }
-  //   })
-  //   .then(res => {
-  //     console.log(res);
-  //   })
-  //   .catch( e => {
-  //     console.log('Error', e);
-  //   });
-  // }
   const handleSubmit = (d) => {
     setValid(false);
     const formData = new FormData();
     formData.append('file', file);
     
-    axios.post('http://127.0.0.1:1234/upload', formData, {
+    axios.post('http://127.0.0.1:3000/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -57,12 +41,12 @@ function App() {
       //   config.timeout = 1000;
       //   return config;
       // });
-      axios.post('http://127.0.0.1:1234', payload)
+      axios.post('http://127.0.0.1:3000', payload)
       .then(res => {
         console.log(res);
-        setZipURL('http://3.95.255.135:1234/' + res.data.code);
-        // zipLink.current.click();
-        setValid(true);
+        // setZipURL('http://3.95.255.135:3000/' + res.data.code);
+        // // zipLink.current.click();
+        // setValid(true);
       })
       .catch(e => {
         console.log(e);

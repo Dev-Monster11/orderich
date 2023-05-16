@@ -23,7 +23,7 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
     
-    axios.post('http://localhost:3000/upload', formData, {
+    axios.post('/api/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -41,7 +41,7 @@ function App() {
       //   config.timeout = 1000;
       //   return config;
       // });
-      axios.post('http://localhost:3000', payload)
+      axios.post('/api', payload)
       .then(res => {
         console.log(res);
         // setZipURL('http://3.95.255.135:3000/' + res.data.code);

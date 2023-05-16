@@ -33,7 +33,7 @@ let upload = multer({
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "build", "index.html"))
 })
-app.post('/upload', upload.single("file"), (req, res) => {
+app.post('/api/upload', upload.single("file"), (req, res) => {
     fs.readFile(req.file.path, (err, data) => {
         fs.writeFile("temp.png", data, err => {
             if (err) res.json(err);
@@ -41,7 +41,7 @@ app.post('/upload', upload.single("file"), (req, res) => {
     });
     res.json('success');
 });
-app.post('/', (req, res) => {
+app.post('/api', (req, res) => {
     // shell.exec('npm i -g react-native-cli');
     const skeleton = 'react-native init --npm --skip-install --title ' + req.body.name + ' --package-name com.apollo.' + req.body.name + ' ' + req.body.name;
     shell.config.silent=true;

@@ -8,6 +8,7 @@ import axios from "axios";
 function App() {
   const [file, setFile] = useState();
   const [isValid, setValid] = useState(true);
+  const [isFormValid, setFormValid] = useState(false);
   const appName = useRef();
   const appLogo = useRef();
   const appURL = useRef();
@@ -15,18 +16,27 @@ function App() {
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
   }
-  // const abc = (_) => {
-  //   axios.get('http://52.29.178.14/api/download', {responseType: 'blob'})
-  //   .then((res) => {
-  //     const url = window.URL.createObjectURL(new Blob([res.data]));
-  //     const link = document.createElement('a');
-  //     link.href = url;
-  //     link.setAttribute('download', '1.zip');
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     link.remove();
-  //   })
-  // }
+  const onNameChange = (e) => {
+
+  }
+  const onURLChange = (e) => {
+
+  }
+  const checkValid() => {
+    const str = appURL.current.value;
+    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  // return !!pattern.test(str);    
+    if (appName.current.value.trim() != '' && file != null && !!pattern.test(str)){
+      setFormValid(true);
+    }else{
+      setFormValid(false);
+    }
+  }
   const handleSubmit = (d) => {
     setValid(false);
     const formData = new FormData();
@@ -63,6 +73,9 @@ function App() {
           // console.log(res);
           // setZipURL('http://3.95.255.135:3000/' + res.data.code);
           // // zipLink.current.click();
+          setFile('');
+          appName.current.value = '';
+          appURL.current.value = '';
           setValid(true);
         });
       })
@@ -79,7 +92,7 @@ function App() {
     <Form noValidate className="center">
       <Form.Group className="mb-3" controlId='appName'>
         <Form.Label>App Name</Form.Label>
-        <Form.Control type='input' ref={appName} disabled={!isValid}></Form.Control>
+        <Form.Control type='input' ref={appName} disabled={!isValid} onChange={onNameChange}></Form.Control>
       </Form.Group>
       <Form.Group className="mb-3" controlId='appLogo'>
         <Form.Label>App Logo</Form.Label>
@@ -87,12 +100,12 @@ function App() {
       </Form.Group>
       <Form.Group className="mb-3" controlId='appURL'>
         <Form.Label>App URL</Form.Label>
-        <Form.Control type='input' disabled={!isValid} ref={appURL}></Form.Control>
+        <Form.Control type='input' disabled={!isValid} ref={appURL} onChange={onURLChange}></Form.Control>
       </Form.Group>            
       {/* <Button variant='primary' onClick={handleSubmit}>
         Compile
       </Button> */}
-      <Button variant='primary' onClick={handleSubmit} disabled={!isValid}>
+      <Button variant='primary' onClick={handleSubmit} disabled={!isFormValid}>
         Compile
       </Button>
 

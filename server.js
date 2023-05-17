@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "build", "index.html"))
 })
 app.post('/api/upload', upload.single("file"), (req, res) => {
-    console.log(req.file);
+
     fs.readFile(req.file.path, (err, data) => {
         fs.writeFile("temp.png", data, err => {
             if (err) res.json(err);

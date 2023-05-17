@@ -50,7 +50,7 @@ function App() {
       //   return config;
       // });
       
-      axios.get('/api/generate', payload)
+      axios.post('/api/generate', payload)
       .then(res => {
         axios.get('/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
         .then((res) => {

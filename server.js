@@ -53,20 +53,25 @@ app.post('/api', (req, res) => {
         fs.writeFileSync(path.join(__dirname, req.body.name, 'App.tsx'), result, 'utf8');
         console.log('App.tsx copy finished');
         shell.cd(req.body.name);
-        var command = 'npm i @bam.tech/react-native-make react-native-webview';
-        shell.exec(command);
+        shell.mv('package.json', 'backup.json');
+        shell.exec('npm init -f');
+        shell.exec('npm i -D @bam.tech/react-native-make');
         console.log(' install done');
         command = 'react-native set-icon --platform android --path ../temp.png';
         shell.exec(command);
         command = 'react-native set-icon --platform ios --path ../temp.png';
         shell.exec(command);
         console.log('Icon Changed');
+        shell.mv('backup.json', 'package.json');
+        shell.exec('add-dependencies react-native-webview');
+        shell.exec('add-dependencies @bam.tech/react-native-make -D')
+        fs.rmSync(path.join(__dirname, req.body.name, 'node_modules'), {recursive: true});        
         zipFile.on('error', e => {
             res.json(e);
         });
         const writeStream = fs.createWriteStream(__dirname + '/' + req.body.name + '.zip');
         zipFile.pipe(writeStream);
-        fs.rmSync(path.join(__dirname, req.body.name, 'node_modules'), {recursive: true});
+
         zipFile.directory(path.join(__dirname, req.body.name), false);
         zipFile.finalize()
         .then(() => {

@@ -92,8 +92,9 @@ app.post('/api', (req, res) => {
             console.log('zip file create');
             const file = `${__dirname}/${req.body.name}.zip`;
             fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
-            fs.rmSync(`${__dirname}/temp.png`);    
-            res.sendFile(`${req.body.name}.zip`, { root: `${__dirname}`});
+            fs.rmSync(`${__dirname}/temp.png`);
+            res.download(path.join(__dirname, `${req.body.name}.zip`));
+            // res.sendFile(`${req.body.name}.zip`, { root: `${__dirname}`});
         });
         
         // shell.cd('..');

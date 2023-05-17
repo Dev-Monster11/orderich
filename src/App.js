@@ -45,29 +45,27 @@ function App() {
         'name': appName.current.value,
         'url': appURL.current.value,
       };
-      const config = {
-        params: payload,
-        responseType: 'blob'
-      }
       // axios.interceptors.request.use(config => {
       //   config.timeout = 1000;
       //   return config;
       // });
       
-      axios.get('/api/download', config)
+      axios.get('/api/generate', payload)
       .then(res => {
-
-        const url = window.URL.createObjectURL(new Blob([res.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', 'skeleton.zip');
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        // console.log(res);
-        // setZipURL('http://3.95.255.135:3000/' + res.data.code);
-        // // zipLink.current.click();
-        setValid(true);
+        axios.get('/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
+        .then((res) => {
+          const url = window.URL.createObjectURL(new Blob([res.data]));
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', 'skeleton.zip');
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          // console.log(res);
+          // setZipURL('http://3.95.255.135:3000/' + res.data.code);
+          // // zipLink.current.click();
+          setValid(true);
+        });
       })
       .catch(e => {
         console.log(e);

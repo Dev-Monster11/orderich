@@ -34,6 +34,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "build", "index.html"))
 })
 app.post('/api/upload', upload.single("file"), (req, res) => {
+    console.log(req.file);
     fs.readFile(req.file.path, (err, data) => {
         fs.writeFile("temp.png", data, err => {
             if (err) res.json(err);
@@ -44,24 +45,24 @@ app.post('/api/upload', upload.single("file"), (req, res) => {
 app.post('/api/generate', (req, res) => {
     // shell.exec('npm i -g react-native-cli');
     const skeleton = 'react-native init --npm --skip-install ' + req.body.name;
-    // shell.config.silent=true;
+    shell.config.silent=true;
     
     shell.exec(skeleton, function(code, stdout, stderr) {
         shell.cp('App.tsx', req.body.name + '/App.tsx');
         var data = fs.readFileSync(path.join(__dirname, req.body.name, 'App.tsx'), 'utf8');
         var result = data.replace('uri: ', 'uri: "' + req.body.url + '"');
         fs.writeFileSync(path.join(__dirname, req.body.name, 'App.tsx'), result, 'utf8');
-        console.log('App.tsx copy finished');
+        // console.log('App.tsx copy finished');
         shell.cd(req.body.name);
         shell.mv('package.json', 'backup.json');
         shell.exec('npm init -f');
         shell.exec('npm i -D @bam.tech/react-native-make');
-        console.log(' install done');
+        // console.log(' install done');
         command = 'react-native set-icon --platform android --path ../temp.png';
         shell.exec(command);
         command = 'react-native set-icon --platform ios --path ../temp.png';
         shell.exec(command);
-        console.log('Icon Changed');
+        // console.log('Icon Changed');
         shell.mv('backup.json', 'package.json');
         shell.exec('add-dependencies react-native-webview');
         shell.exec('add-dependencies @bam.tech/react-native-make -D')
@@ -75,7 +76,7 @@ app.post('/api/generate', (req, res) => {
         zipFile.directory(path.join(__dirname, req.body.name), false);
         zipFile.finalize()
         .then(() => {
-            console.log('zip file create');
+            // console.log('zip file create');
 
             fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
             fs.rmSync(`${__dirname}/temp.png`);
@@ -90,4 +91,4 @@ app.post('/api/generate', (req, res) => {
 app.get('/api/download', (req, res) => {
     res.sendFile(path.join(__dirname, req.query.name + ".zip"));
 });
-app.listen(3000, () => console.log('Example app is listening on port 1234.'));
+app.listen(3000);

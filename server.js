@@ -6,11 +6,11 @@ const multer = require('multer');
 const app = express();
 const shell = require('shelljs');
 const fs = require('fs');
-// const archiver = require('archiver');
+const archiver = require('archiver');
 const path = require('path');
-const admZip = require('adm-zip');
-// const zipFile = archiver('zip', { zlib: { level: 9 }});
-var zip = new admZip();
+
+const zipFile = archiver('zip', { zlib: { level: 9 }});
+
 
 
 // app.use(function(req, res, next) {
@@ -80,28 +80,25 @@ app.post('/api', (req, res) => {
         command = 'react-native set-icon --platform ios --path ../temp.png';
         shell.exec(command);
         console.log('Icon Changed');
-        // zipFile.on('error', e => {
-        //     res.json(e);
-        // });
-        // const writeStream = fs.createWriteStream(__dirname + '/' + req.body.name + '.zip');
-        // zipFile.pipe(writeStream);
+        zipFile.on('error', e => {
+            res.json(e);
+        });
+        const writeStream = fs.createWriteStream(__dirname + '/' + req.body.name + '.zip');
+        zipFile.pipe(writeStream);
         fs.rmSync(path.join(__dirname, req.body.name, 'node_modules'), {recursive: true});
-        // zipFile.directory(path.join(__dirname, req.body.name), false);
-        zip.addLocalFolder(path.join(__dirname, req.body.name));
-        const zipContent = zip.toBuffer();
-        res.set({
-            "Content-Length": Buffer.byteLength(zipContent),
-            "Content-Type": "text/plain",
-            "Content-Disposition": `attachment; filename=source.zip`});
-        res.status(200).send(zipContent.toString("hex"));
-        // zipFile.finalize()
-        // .then(() => {
-        //     console.log('zip file create');
-        //     const file = `${__dirname}/${req.body.name}.zip`;
-        //     fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
-        //     fs.rmSync(`${__dirname}/temp.png`);    
-        //     res.sendFile(`${req.body.name}.zip`, { root: `${__dirname}`});
-        // });
+        zipFile.directory(path.join(__dirname, req.body.name), false);
+        zipFile.finalize()
+        .then(() => {
+            console.log('zip file create');
+            const file = `${__dirname}/${req.body.name}.zip`;
+            fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
+            fs.rmSync(`${__dirname}/temp.png`);    
+            res.sendFile(`${req.body.name}.zip`, { root: `${__dirname}`});
+        });
+        
+        // shell.cd('..');
+
+        // shell.rm('temp.png');
     });
   
     

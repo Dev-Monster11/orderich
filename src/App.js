@@ -42,7 +42,7 @@ function App() {
       
       axios.post('/api', payload, {responseType: 'blob'})
       .then(res => {
-        var blob = res.data;
+        var blob = res;
         var url = window.URL.createObjectURL(blob);
         var a = document.createElement('a');
         a.href = url;

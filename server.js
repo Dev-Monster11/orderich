@@ -41,18 +41,18 @@ app.post('/api/upload', upload.single("file"), (req, res) => {
     });
     res.json('success');
 });
-app.post('/api', (req, res) => {
+app.get('/api/download', (req, res) => {
     // shell.exec('npm i -g react-native-cli');
-    const skeleton = 'react-native init --npm --skip-install ' + req.body.name;
+    const skeleton = 'react-native init --npm --skip-install ' + req.query.name;
     // shell.config.silent=true;
     
-    shell.exec(skeleton, function(code, stdout, stderr) {
-        shell.cp('App.tsx', req.body.name + '/App.tsx');
-        var data = fs.readFileSync(path.join(__dirname, req.body.name, 'App.tsx'), 'utf8');
-        var result = data.replace('uri: ', 'uri: "' + req.body.url + '"');
-        fs.writeFileSync(path.join(__dirname, req.body.name, 'App.tsx'), result, 'utf8');
+    shell.exec(skeleton, (code, stdout, stderr) => {
+        shell.cp('App.tsx', req.query.name + '/App.tsx');
+        var data = fs.readFileSync(path.join(__dirname, req.query.name, 'App.tsx'), 'utf8');
+        var result = data.replace('uri: ', 'uri: "' + req.query.url + '"');
+        fs.writeFileSync(path.join(__dirname, req.query.name, 'App.tsx'), result, 'utf8');
         console.log('App.tsx copy finished');
-        shell.cd(req.body.name);
+        shell.cd(req.query.name);
         shell.mv('package.json', 'backup.json');
         shell.exec('npm init -f');
         shell.exec('npm i -D @bam.tech/react-native-make');
@@ -65,28 +65,29 @@ app.post('/api', (req, res) => {
         shell.mv('backup.json', 'package.json');
         shell.exec('add-dependencies react-native-webview');
         shell.exec('add-dependencies @bam.tech/react-native-make -D')
-        fs.rmSync(path.join(__dirname, req.body.name, 'node_modules'), {recursive: true});        
+        fs.rmSync(path.join(__dirname, req.query.name, 'node_modules'), {recursive: true});        
         zipFile.on('error', e => {
             res.json(e);
         });
-        const writeStream = fs.createWriteStream(__dirname + '/' + req.body.name + '.zip');
+        const writeStream = fs.createWriteStream(__dirname + '/' + req.query.name + '.zip');
         zipFile.pipe(writeStream);
 
-        zipFile.directory(path.join(__dirname, req.body.name), false);
+        zipFile.directory(path.join(__dirname, req.query.name), false);
         zipFile.finalize()
         .then(() => {
             console.log('zip file create');
-            const file = `${__dirname}/${req.body.name}.zip`;
-            fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
+            const file = `${__dirname}/${req.query.name}.zip`;
+            fs.rmSync(path.join(__dirname, req.query.name), {recursive: true});
             fs.rmSync(`${__dirname}/temp.png`);
-            // res.download(path.join(__dirname, `${req.body.name}.zip`));
-            res.sendFile(`${req.body.name}.zip`, { root: `${__dirname}`});
+            // res.download(path.join(__dirname, `${req.query.name}.zip`));
+            // res.send('success');
+            res.sendFile(`${req.query.name}.zip`, { root: `${__dirname}`});
         });
     });
   
     
 });
-app.post('/api/download', (req, res) => {
+app.get('/api/download', (req, res) => {
     res.sendFile(path.join(__dirname, "StackOverFlow.zip"));
 });
 app.listen(3000, () => console.log('Example app is listening on port 1234.'));

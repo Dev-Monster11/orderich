@@ -92,8 +92,7 @@ app.post('/api', (req, res) => {
         res.set({
             "Content-Length": Buffer.byteLength(zipContent),
             "Content-Type": "text/plain",
-            "Content-Disposition": `attachment; filename=${filename}.zip`,            
-        });
+            "Content-Disposition": `attachment; filename=source.zip`});
         res.status(200).send(zipContent.toString("hex"));
         // zipFile.finalize()
         // .then(() => {

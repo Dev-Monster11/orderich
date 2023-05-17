@@ -16,6 +16,18 @@ function App() {
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
   }
+  // const abc = (_) => {
+  //   axios.get('http://52.29.178.14/api/download2', {responseType: 'blob'})
+  //   .then((res) => {
+  //     const url = window.URL.createObjectURL(new Blob([res.data]));
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.setAttribute('download', '1.zip');
+  //     document.body.appendChild(link);
+  //     link.click();
+  //     link.remove();
+  //   })
+  // }
   const handleSubmit = (d) => {
     setValid(false);
     const formData = new FormData();
@@ -42,25 +54,24 @@ function App() {
       
       axios.post('/api', payload, {responseType: 'blob'})
       .then(res => {
-        var blob = res.data;
-        var url = window.URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'source.zip';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'skeleton.zip');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
         // console.log(res);
         // setZipURL('http://3.95.255.135:3000/' + res.data.code);
         // // zipLink.current.click();
-        // setValid(true);
+        setValid(true);
       })
       .catch(e => {
         console.log(e);
       });
     })
     .catch( e => {
-      console.log('Error', e);
+      console.log('aaa', e);
     });    
 
   }

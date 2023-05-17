@@ -105,10 +105,4 @@ app.post('/api', (req, res) => {
     
 });
 
-app.get('/api/download1', (req, res) => {
-    res.download(path.join(__dirname, `StackOverFlow.zip`));
-});
-app.get('/api/download2', (req, res) => {
-    res.sendFile(`StackOverFlow.zip`, { root: `${__dirname}`});
-});
 app.listen(3000, () => console.log('Example app is listening on port 1234.'));

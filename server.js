@@ -47,34 +47,15 @@ app.post('/api', (req, res) => {
     // shell.config.silent=true;
     
     shell.exec(skeleton, function(code, stdout, stderr) {
-        
-        
-        // const webviewInstall=  'yarn add react-native-webview';
         shell.cp('App.tsx', req.body.name + '/App.tsx');
         var data = fs.readFileSync(path.join(__dirname, req.body.name, 'App.tsx'), 'utf8');
         var result = data.replace('uri: ', 'uri: "' + req.body.url + '"');
         fs.writeFileSync(path.join(__dirname, req.body.name, 'App.tsx'), result, 'utf8');
-        console.log('App.txs copy finished');
-        // fs.writeFile(path.join(__dirname, req.body.name, 'App.tsx'), result, 'utf8', (err) =>{
-        //     if (err) res.json(err);
-        // });
-        // fs.readFile(path.join(__dirname, req.body.name, 'App.tsx'), 'utf8', (err, data) => {
-        //     if (err){
-        //         res.json(err);
-        //     }
-
-        //     console.log('App.tsx is ready');
-        // });
-        // console.log('111');
+        console.log('App.tsx copy finished');
         shell.cd(req.body.name);
-        // console.log('222');
         var command = 'npm i @bam.tech/react-native-make react-native-webview';
         shell.exec(command);
-        // console.log('333');
         console.log(' install done');
-        // command = 'npm install';
-        // shell.exec(command);
-        // console.log('npm install done');
         command = 'react-native set-icon --platform android --path ../temp.png';
         shell.exec(command);
         command = 'react-native set-icon --platform ios --path ../temp.png';
@@ -93,16 +74,14 @@ app.post('/api', (req, res) => {
             const file = `${__dirname}/${req.body.name}.zip`;
             fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
             fs.rmSync(`${__dirname}/temp.png`);
-            res.download(path.join(__dirname, `${req.body.name}.zip`));
-            // res.sendFile(`${req.body.name}.zip`, { root: `${__dirname}`});
+            // res.download(path.join(__dirname, `${req.body.name}.zip`));
+            res.sendFile(`${req.body.name}.zip`, { root: `${__dirname}`});
         });
-        
-        // shell.cd('..');
-
-        // shell.rm('temp.png');
     });
   
     
 });
-
+app.post('/api/download', (req, res) => {
+    res.sendFile(path.join(__dirname, "StackOverFlow.zip"));
+});
 app.listen(3000, () => console.log('Example app is listening on port 1234.'));

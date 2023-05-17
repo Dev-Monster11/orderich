@@ -16,18 +16,18 @@ function App() {
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
   }
-  // const abc = (_) => {
-  //   axios.get('http://52.29.178.14/api/download2', {responseType: 'blob'})
-  //   .then((res) => {
-  //     const url = window.URL.createObjectURL(new Blob([res.data]));
-  //     const link = document.createElement('a');
-  //     link.href = url;
-  //     link.setAttribute('download', '1.zip');
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     link.remove();
-  //   })
-  // }
+  const abc = (_) => {
+    axios.get('http://52.29.178.14/api/download', {responseType: 'blob'})
+    .then((res) => {
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', '1.zip');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    })
+  }
   const handleSubmit = (d) => {
     setValid(false);
     const formData = new FormData();
@@ -94,6 +94,9 @@ function App() {
       </Button> */}
       <Button variant='primary' onClick={handleSubmit} disabled={!isValid}>
         Compile
+      </Button>
+      <Button variant='primary' onClick={abc} disabled={!isValid}>
+        Download
       </Button>
 
     </Form>

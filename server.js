@@ -6,11 +6,11 @@ const multer = require('multer');
 const app = express();
 const shell = require('shelljs');
 const fs = require('fs');
-const archiver = require('archiver');
+// const archiver = require('archiver');
 const path = require('path');
-
-const zipFile = archiver('zip', { zlib: { level: 9 }});
-
+const admZip = require('adm-zip');
+// const zipFile = archiver('zip', { zlib: { level: 9 }});
+var zip = new admZip();
 
 
 // app.use(function(req, res, next) {
@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "build")));
 
 app.use(cors({
-    origin: 'http://34.197.159.196'
+    origin: '*'
 }));
 
 let upload = multer({
@@ -43,17 +43,18 @@ app.post('/api/upload', upload.single("file"), (req, res) => {
 });
 app.post('/api', (req, res) => {
     // shell.exec('npm i -g react-native-cli');
-    const skeleton = 'react-native init --npm --skip-install --title ' + req.body.name + ' --package-name com.apollo.' + req.body.name + ' ' + req.body.name;
-    shell.config.silent=true;
+    const skeleton = 'react-native init --npm --skip-install ' + req.body.name;
+    // shell.config.silent=true;
     
     shell.exec(skeleton, function(code, stdout, stderr) {
         
-        var command = 'npm i -D @bam.tech/react-native-make';
+        
         // const webviewInstall=  'yarn add react-native-webview';
         shell.cp('App.tsx', req.body.name + '/App.tsx');
         var data = fs.readFileSync(path.join(__dirname, req.body.name, 'App.tsx'), 'utf8');
         var result = data.replace('uri: ', 'uri: "' + req.body.url + '"');
         fs.writeFileSync(path.join(__dirname, req.body.name, 'App.tsx'), result, 'utf8');
+        console.log('App.txs copy finished');
         // fs.writeFile(path.join(__dirname, req.body.name, 'App.tsx'), result, 'utf8', (err) =>{
         //     if (err) res.json(err);
         // });
@@ -64,35 +65,44 @@ app.post('/api', (req, res) => {
 
         //     console.log('App.tsx is ready');
         // });
-        
+        // console.log('111');
         shell.cd(req.body.name);
+        // console.log('222');
+        var command = 'npm i @bam.tech/react-native-make react-native-webview';
         shell.exec(command);
-        command = 'npm i react-native-webview';
-        shell.exec(command);
-        command = 'npm install';
-        shell.exec(command);
+        // console.log('333');
+        console.log(' install done');
+        // command = 'npm install';
+        // shell.exec(command);
+        // console.log('npm install done');
         command = 'react-native set-icon --platform android --path ../temp.png';
         shell.exec(command);
         command = 'react-native set-icon --platform ios --path ../temp.png';
         shell.exec(command);
-        zipFile.on('error', e => {
-            res.json(e);
-        });
         console.log('Icon Changed');
-        const writeStream = fs.createWriteStream(__dirname + '/' + req.body.name + '.zip');
-        zipFile.pipe(writeStream);
-        // console.log(path.join(__dirname, req.body.name, 'node_modules'));
+        // zipFile.on('error', e => {
+        //     res.json(e);
+        // });
+        // const writeStream = fs.createWriteStream(__dirname + '/' + req.body.name + '.zip');
+        // zipFile.pipe(writeStream);
         fs.rmSync(path.join(__dirname, req.body.name, 'node_modules'), {recursive: true});
-        zipFile.directory(path.join(__dirname, req.body.name), false);
-        zipFile.finalize();
-        console.log('zip file create');
-        // // shell.exec('cd ..');
-        // shell.cd('..');
-        // fs.rmdirSync(path.join(__dirname, req.body.name), {recursive: true});
-        // fs.rmSync('temp.png');
-        // shell.rm('temp.png');
-        const file = `${__dirname}/${req.body.name}.zip`;
-        res.download(file);
+        // zipFile.directory(path.join(__dirname, req.body.name), false);
+        zip.addLocalFolder(path.join(__dirname, req.body.name));
+        const zipContent = zip.toBuffer();
+        res.set({
+            "Content-Length": Buffer.byteLength(zipContent),
+            "Content-Type": "text/plain",
+            "Content-Disposition": `attachment; filename=${filename}.zip`,            
+        });
+        res.status(200).send(content.toString("hex"));
+        // zipFile.finalize()
+        // .then(() => {
+        //     console.log('zip file create');
+        //     const file = `${__dirname}/${req.body.name}.zip`;
+        //     fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
+        //     fs.rmSync(`${__dirname}/temp.png`);    
+        //     res.sendFile(`${req.body.name}.zip`, { root: `${__dirname}`});
+        // });
     });
   
     

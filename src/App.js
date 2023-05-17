@@ -4,16 +4,14 @@ import {useRef, useState} from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Form, Button} from 'react-bootstrap';
-
+import { saveAs } from 'file-saver';
 import axios from "axios";
 function App() {
   const [file, setFile] = useState();
-  const [zipURL, setZipURL] = useState();
   const [isValid, setValid] = useState(true);
   const appName = useRef();
   const appLogo = useRef();
   const appURL = useRef();
-  const zipLink = useRef();
 
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -41,16 +39,19 @@ function App() {
       //   config.timeout = 1000;
       //   return config;
       // });
+      
       axios.post('/api', payload)
-      .then(res => {
-        console.log(res);
-        // setZipURL('http://3.95.255.135:3000/' + res.data.code);
-        // // zipLink.current.click();
-        // setValid(true);
-      })
-      .catch(e => {
-        console.log(e);
-      });
+      .then((res) => res.blob())
+      .then(blob => saveAs(blob, 'source.zip'));
+            // .then(res => {
+      //   console.log(res);
+      //   // setZipURL('http://3.95.255.135:3000/' + res.data.code);
+      //   // // zipLink.current.click();
+      //   // setValid(true);
+      // })
+      // .catch(e => {
+      //   console.log(e);
+      // });
     })
     .catch( e => {
       console.log('Error', e);
@@ -59,7 +60,6 @@ function App() {
   }
   return (
     <Form noValidate className="center">
-      <a href={{zipURL}} ref={zipLink}/>
       <Form.Group className="mb-3" controlId='appName'>
         <Form.Label>App Name</Form.Label>
         <Form.Control type='input' ref={appName} disabled={!isValid}></Form.Control>

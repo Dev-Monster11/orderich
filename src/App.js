@@ -15,14 +15,15 @@ function App() {
 
   const onFileChange = (e) => {
     setFile(e.target.files[0]);
+    checkValid();
   }
   const onNameChange = (e) => {
-
+    checkValid()
   }
   const onURLChange = (e) => {
-
+    checkValid()
   }
-  const checkValid() => {
+  const checkValid = () => {
     const str = appURL.current.value;
     var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
@@ -93,10 +94,16 @@ function App() {
       <Form.Group className="mb-3" controlId='appName'>
         <Form.Label>App Name</Form.Label>
         <Form.Control type='input' ref={appName} disabled={!isValid} onChange={onNameChange}></Form.Control>
+        <Form.Text className='text-muted'>
+          First character must be alphabetic, not numeric or special character
+        </Form.Text>
       </Form.Group>
       <Form.Group className="mb-3" controlId='appLogo'>
         <Form.Label>App Logo</Form.Label>
         <Form.Control type='file' disabled={!isValid} filename={file} accept = "image/*" ref={appLogo} onChange={onFileChange}></Form.Control>
+        <Form.Text className='text-muted'>
+          Must be Square, larger than 1024*1024 only support PNG or JPG
+        </Form.Text>        
       </Form.Group>
       <Form.Group className="mb-3" controlId='appURL'>
         <Form.Label>App URL</Form.Label>

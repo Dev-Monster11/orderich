@@ -34,7 +34,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, "build", "index.html"))
 })
 app.post('/api/upload', upload.single("file"), (req, res) => {
-
+    console.log(req);
     fs.readFile(req.file.path, (err, data) => {
         fs.writeFile("temp.png", data, err => {
             if (err) res.json(err);
@@ -45,7 +45,7 @@ app.post('/api/upload', upload.single("file"), (req, res) => {
 app.post('/api/generate', (req, res) => {
     // shell.exec('npm i -g react-native-cli');
     const skeleton = 'react-native init --npm --skip-install ' + req.body.name;
-    shell.config.silent=true;
+    // shell.config.silent=true;
     
     shell.exec(skeleton, function(code, stdout, stderr) {
         shell.cp('App.tsx', req.body.name + '/App.tsx');
@@ -78,7 +78,7 @@ app.post('/api/generate', (req, res) => {
         .then(() => {
             // console.log('zip file create');
 
-            fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
+            // fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
             fs.rmSync(`${__dirname}/temp.png`);
             // res.download(path.join(__dirname, `${req.body.name}.zip`));
             res.send('success');

@@ -1,14 +1,14 @@
-
-
 import {useRef, useState} from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Form, Button} from 'react-bootstrap';
 import axios from "axios";
+import { ThreeCircles } from 'react-loader-spinner';
 function App() {
   const [file, setFile] = useState();
   const [isValid, setValid] = useState(true);
   const [isFormValid, setFormValid] = useState(false);
+  const [isWorking, setIsWorking] = useState(false);
   const appName = useRef();
   const appLogo = useRef();
   const appURL = useRef();
@@ -40,6 +40,7 @@ function App() {
   }
   const handleSubmit = (d) => {
     setValid(false);
+    setIsWorking(true);
     const formData = new FormData();
     formData.append('file', file);
     
@@ -74,10 +75,11 @@ function App() {
           // console.log(res);
           // setZipURL('http://3.95.255.135:3000/' + res.data.code);
           // // zipLink.current.click();
-          setFile('');
+          // setFile('');
           appName.current.value = '';
           appURL.current.value = '';
-          setValid(true);
+          appLogo.current.value = null;
+          setIsWorking(false);
         });
       })
       .catch(e => {
@@ -89,7 +91,9 @@ function App() {
     });    
 
   }
+
   return (
+    <>
     <Form noValidate className="center">
       <Form.Group className="mb-3" controlId='appName'>
         <Form.Label>App Name</Form.Label>
@@ -108,19 +112,29 @@ function App() {
       <Form.Group className="mb-3" controlId='appURL'>
         <Form.Label>App URL</Form.Label>
         <Form.Control type='input' disabled={!isValid} ref={appURL} onChange={onURLChange}></Form.Control>
-      </Form.Group>            
-      {/* <Button variant='primary' onClick={handleSubmit}>
-        Compile
-      </Button> */}
+      </Form.Group>
       <Button variant='primary' onClick={handleSubmit} disabled={!isFormValid}>
         Compile
       </Button>
 
-
     </Form>
+    {isWorking ? 
+      <div style={{  position:'absolute', top:0, left:0, width:'100%', height:'100%', zIndex: 9999}}>
+      <ThreeCircles
+        height="100"
+        width="100"
+        color="#4fa94d"
+        wrapperStyle={{marginLeft:'50%', marginTop:'50%'}}
+        wrapperClass=""
+        ariaLabel="three-circles-rotating"
+        outerCircleColor=""
+        innerCircleColor=""
+        middleCircleColor=""
+      /></div> : <></>
+    }
+    </>
 
   );  
 }
 
 export default App;
-

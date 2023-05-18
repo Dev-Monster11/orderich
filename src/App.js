@@ -43,7 +43,7 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
     
-    axios.post('http://localhost:30001/api/upload', formData, {
+    axios.post('/api/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -60,9 +60,9 @@ function App() {
       //   return config;
       // });
       
-      axios.post('http://localhost:30001/api/generate', payload)
+      axios.post('/api/generate', payload)
       .then(res => {
-        axios.get('http://localhost:30001/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
+        axios.get('/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
         .then((res) => {
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement('a');

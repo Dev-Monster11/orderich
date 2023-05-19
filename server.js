@@ -21,20 +21,31 @@ const zipFile = archiver('zip', { zlib: { level: 9 }});
   
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "build")));
+
 
 app.use(cors({
     origin: '*'
 }));
 
+// var storage = multer.diskStorage({
+//     destination: (_, file, cb) => {
+//         cb(null, 'uploads');
+//         // console.log('upload: saved to ' + file.originalname);
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, "temp.png");
+//     }
+// })
+// var upload = multer({storage: storage});
 let upload = multer({
     dest: 'uploads/'
 });
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, "build", "index.html"))
+app.use(express.static(path.join(__dirname, "build")));
+app.get('/appmanager', (req, res) => {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
 })
-app.post('/api/upload', upload.single("file"), (req, res) => {
-    console.log(req);
+app.post('/appmanager/api/upload', upload.single("file"), (req, res) => {
+    
     fs.readFile(req.file.path, (err, data) => {
         fs.writeFile("temp.png", data, err => {
             if (err) res.json(err);
@@ -42,11 +53,10 @@ app.post('/api/upload', upload.single("file"), (req, res) => {
     });
     res.json('success');
 });
-app.post('/api/generate', (req, res) => {
+app.post('/appmanager/api/generate', (req, res) => {
     // shell.exec('npm i -g react-native-cli');
     const skeleton = 'react-native init --npm --skip-install ' + req.body.name;
-    // shell.config.silent=true;
-    
+    shell.config.silent=true;
     shell.exec(skeleton, function(code, stdout, stderr) {
         shell.cp('App.tsx', req.body.name + '/App.tsx');
         var data = fs.readFileSync(path.join(__dirname, req.body.name, 'App.tsx'), 'utf8');
@@ -78,7 +88,7 @@ app.post('/api/generate', (req, res) => {
         .then(() => {
             // console.log('zip file create');
 
-            // fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
+            fs.rmSync(path.join(__dirname, req.body.name), {recursive: true});
             fs.rmSync(`${__dirname}/temp.png`);
             // res.download(path.join(__dirname, `${req.body.name}.zip`));
             res.send('success');
@@ -88,7 +98,7 @@ app.post('/api/generate', (req, res) => {
   
     
 });
-app.get('/api/download', (req, res) => {
+app.get('/appmanager/api/download', (req, res) => {
     res.sendFile(path.join(__dirname, req.query.name + ".zip"));
 });
 app.listen(30001);

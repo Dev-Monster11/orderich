@@ -32,7 +32,7 @@ function App() {
     '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
     '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
   // return !!pattern.test(str);    
-    if (appName.current.value.trim() != '' && file != null && !!pattern.test(str)){
+    if (appName.current.value.trim() !== '' && file !== null && !!pattern.test(str)){
       setFormValid(true);
     }else{
       setFormValid(false);
@@ -44,7 +44,7 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
     
-    axios.post('/appmanager/api/upload', formData, {
+    axios.post('/appgenerator/api/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -61,9 +61,9 @@ function App() {
       //   return config;
       // });
       
-      axios.post('/appmanager/api/generate', payload)
+      axios.post('/appgenerator/api/generate', payload)
       .then(res => {
-        axios.get('/appmanager/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
+        axios.get('/appgenerator/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
         .then((res) => {
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement('a');
@@ -80,6 +80,8 @@ function App() {
           appURL.current.value = '';
           appLogo.current.value = null;
           setIsWorking(false);
+          setValid(true);
+          setFormValid(false)
         });
       })
       .catch(e => {
@@ -124,7 +126,7 @@ function App() {
         height="100"
         width="100"
         color="#4fa94d"
-        wrapperStyle={{marginLeft:'50%', marginTop:'50%'}}
+        wrapperStyle={{marginLeft:'50%', marginTop:'30%'}}
         wrapperClass=""
         ariaLabel="three-circles-rotating"
         outerCircleColor=""

@@ -43,54 +43,38 @@ function App() {
     setIsWorking(true);
     const formData = new FormData();
     formData.append('file', file);
-    
-    axios.post('https://orderichdevbackendservice.orderich.app/appapi/api/upload', formData, {
+    formData.append('name', appName.current.value);
+    formData.append('url', appURL.current.value);
+     
+    axios.post('https://orderichdevbackendservice.orderich.app/appapi/api/generate', formData,   {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+      'Content-Type': 'multipart/form-data'
+    }})
     .then(res => {
-      // console.log(res);
-
-      const payload = {
-        'name': appName.current.value,
-        'url': appURL.current.value,
-      };
-      // axios.interceptors.request.use(config => {
-      //   config.timeout = 1000;
-      //   return config;
-      // });
-      
-      axios.post('https://orderichdevbackendservice.orderich.app/appapi/api/generate', payload)
-      .then(res => {
-        axios.get('https://orderichdevbackendservice.orderich.app/appapi/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
-        .then((res) => {
-          const url = window.URL.createObjectURL(new Blob([res.data]));
-          const link = document.createElement('a');
-          link.href = url;
-          link.setAttribute('download', 'skeleton.zip');
-          document.body.appendChild(link);
-          link.click();
-          link.remove();
-          // console.log(res);
-          // setZipURL('http://3.95.255.135:3000/' + res.data.code);
-          // // zipLink.current.click();
-          // setFile('');
-          appName.current.value = '';
-          appURL.current.value = '';
-          appLogo.current.value = null;
-          setIsWorking(false);
-          setValid(true);
-          setFormValid(false)
-        });
-      })
-      .catch(e => {
-        console.log(e);
+      axios.get('https://orderichdevbackendservice.orderich.app/appapi/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'skeleton.zip');
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        // console.log(res);
+        // setZipURL('http://3.95.255.135:3000/' + res.data.code);
+        // // zipLink.current.click();
+        // setFile('');
+        appName.current.value = '';
+        appURL.current.value = '';
+        appLogo.current.value = null;
+        setIsWorking(false);
+        setValid(true);
+        setFormValid(false)
       });
     })
-    .catch( e => {
-      console.log('Error', e);
-    });    
+    .catch(e => {
+      console.log(e);
+    });
 
   }
 

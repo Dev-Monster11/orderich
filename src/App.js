@@ -44,7 +44,7 @@ function App() {
     const formData = new FormData();
     formData.append('file', file);
     
-    axios.post('/appgenerator/api/upload', formData, {
+    axios.post('https://orderichdevbackendservice.orderich.app/appapi/api/upload', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -61,9 +61,9 @@ function App() {
       //   return config;
       // });
       
-      axios.post('/appgenerator/api/generate', payload)
+      axios.post('https://orderichdevbackendservice.orderich.app/appapi/api/generate', payload)
       .then(res => {
-        axios.get('/appgenerator/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
+        axios.get('https://orderichdevbackendservice.orderich.app/appapi/api/download', {params: {name: appName.current.value}, responseType: 'blob'})
         .then((res) => {
           const url = window.URL.createObjectURL(new Blob([res.data]));
           const link = document.createElement('a');

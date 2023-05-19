@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/appgenerator/static/css/main.93637bfa.css",
-    "main.js": "/appgenerator/static/js/main.f6d2acf7.js",
+    "main.js": "/appgenerator/static/js/main.39314092.js",
     "index.html": "/appgenerator/index.html",
     "main.93637bfa.css.map": "/appgenerator/static/css/main.93637bfa.css.map",
-    "main.f6d2acf7.js.map": "/appgenerator/static/js/main.f6d2acf7.js.map"
+    "main.39314092.js.map": "/appgenerator/static/js/main.39314092.js.map"
   },
   "entrypoints": [
     "static/css/main.93637bfa.css",
-    "static/js/main.f6d2acf7.js"
+    "static/js/main.39314092.js"
   ]
 }
